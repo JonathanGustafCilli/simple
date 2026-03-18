@@ -1,17 +1,61 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import { createTask } from './api/tasks';
+import { fetchTasks } from './api/tasks';
+type Task = {
+  id: number;
+  title: string;
+  done: boolean;
+};
+
 function App() {
-  const [message, setMessage] = useState('Loading...')
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [title, setTitle] = useState("");
   const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    fetch(`${apiUrl}/api/message`)
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch(() => setMessage('Failed to load message'))
-  }, [])
+    fetchTasks()
+    .then((data: Task[]) => setTasks(data))
+    .catch((error) => console.error(error));
+  }, [apiUrl]);
 
-  return <h1>{message}</h1>
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const trimmedTitle = title.trim();
+    if (!trimmedTitle) return;
+
+    try {
+      const newTask: Task = await createTask(trimmedTitle);
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+      setTitle("");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  return (
+    <div style={{ maxWidth: 500, margin: "40px auto" }}>
+      <h1>Tasks</h1>
+
+      <form onSubmit={handleSubmit}>
+        <input
+          value={title}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setTitle(e.target.value)
+          }
+          placeholder="New task"
+        />
+        <button type="submit">Add</button>
+      </form>
+
+      <ul>
+        {tasks.map((task) => (
+          <li key={task.id}>{task.title} {task.done ? "✅" : ""}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }
+
 
 export default App
