@@ -15,7 +15,11 @@ app.get('/api/tasks', async (req, res) => {
     });
     res.json(tasks);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch tasks' });
+    console.error("GET /api/tasks failed:", error);
+    res.status(500).json({
+      error: "Failed to fetch tasks",
+      details: error.message,
+    });
   }
 });
 

@@ -7,20 +7,41 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Build output
 dist
 dist-ssr
-*.local
-backend/dev.db
-backend/dev.db-journal
+
+# Env files
+.env
+.env.*
+
+# SQLite / Prisma
+backend/data/*.db
+backend/data/*.db-journal
+backend/data/*.db-wal
+
+# Testing
+coverage
+
+# Docker (optional overrides)
+docker-compose.override.yml
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# OS files
 .DS_Store
+
+# Misc
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.swp
+*.swo
